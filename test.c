@@ -806,7 +806,7 @@
 //         menu[choice].func();
 //     }
 //     return 0;
-// }
+// }obj()
 
 #include<stdio.h> #include<stdlib.h> struct node
 {
