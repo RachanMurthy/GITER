@@ -1,5 +1,4 @@
 #include<stdio.h> 
-#include<conio.h> 
 #define INFINITY 999 
 #define MAX 100 
 int parent[MAX],cost[MAX][MAX],t[MAX][2]; 
