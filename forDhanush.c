@@ -1,160 +1,68 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-// A structure to represent a weighted edge in the graph
-struct Edge {
-    int src, dest, weight;
-};
-
-// A structure to represent a connected, undirected, and weighted graph
-struct Graph {
-    // V-> Number of vertices, E-> Number of edges
-    int V, E;
-
-    // The graph is represented as an array of edges.
-    struct Edge* edge;
-};
-
-// A structure to represent a subset for union-find
-struct subset {
-    int parent;
-    int rank;
-};
-
-// Function prototypes
-int find(struct subset subsets[], int i);
-void Union(struct subset subsets[], int x, int y);
-int compare(const void* a, const void* b);
-void KruskalMST(struct Graph* graph);
-
-// Create a graph with V vertices and E edges
-struct Graph* createGraph(int V, int E) {
-    struct Graph* graph = (struct Graph*) malloc(sizeof(struct Graph));
-    graph->V = V;
-    graph->E = E;
-
-    graph->edge = (struct Edge*) malloc(graph->E * sizeof(struct Edge));
-
-    return graph;
+#include<stdio.h> 
+#include<conio.h> 
+#define INFINITY 999 
+#define MAX 100 
+int parent[MAX],cost[MAX][MAX],t[MAX][2]; 
+int find(int v) 
+{ 
+  	while(parent[v]) 
+  	{ 
+     		v=parent[v]; 
+  	} 
+  	return v; 
 }
-
-// A utility function to find the subset of an element i
-int find(struct subset subsets[], int i) {
-    // find root and make root as parent of i (path compression)
-    if (subsets[i].parent != i)
-        subsets[i].parent = find(subsets, subsets[i].parent);
-
-    return subsets[i].parent;
+ 
+void union1(int i,int j) 
+{ 
+  	parent[j]=i; 
 }
+ 
+void kruskal(int n) 
+{ 
+  	int i,j,k,u,v,mincost,res1,res2,sum=0; 
+  	for(k=1;k<n;k++) 
+  	{ 
+     		mincost=INFINITY; 
+     		for(i=1;i<n;i++) 
+     		{ 
+      			for(j=1;j<=n;j++) 
+      			{ 
+ 			        if(i==j)  continue; 
+ 			        if(cost[i][j]<mincost) 
+         			{ 
+            				u=find(i); 
+	     		    		v=find(j); 
+	     			    	if(u!=v) 
+     				    	{ 
+	        	                    res1=i; 
+	                	            res2=j; 
+	                        	    mincost=cost[i][j]; 
+        				} 
+	        		} 
+      			} 
+    		} 
+    		union1(res1,find(res2)); 
+    		t[k][1]=res1; 
+    		t[k][2]=res2; 
+	        sum=sum+mincost; 
+	} 
+  	printf("\nCost of spanning tree is %d\n",sum); 
+  	printf("\nEdges of spanning tree are\n"); 
+  	for(i=1;i<n;i++) 
+  	printf("%d->%d\n",t[i][1],t[i][2]); 
+} 
 
-// A function that does union of two sets of x and y (uses union by rank)
-void Union(struct subset subsets[], int x, int y) {
-    int xroot = find(subsets, x);
-    int yroot = find(subsets, y);
-
-    // Attach smaller rank tree under root of high rank tree (Union by Rank)
-    if (subsets[xroot].rank < subsets[yroot].rank)
-        subsets[xroot].parent = yroot;
-    else if (subsets[xroot].rank > subsets[yroot].rank)
-        subsets[yroot].parent = xroot;
-
-    // If ranks are same, then make one as root and increment its rank by one
-    else {
-        subsets[yroot].parent = xroot;
-        subsets[xroot].rank++;
-    }
-}
-
-// Compare two edges according to their weights. Used in qsort()
-int compare(const void* a, const void* b) {
-    struct Edge* a1 = (struct Edge*)a;
-    struct Edge* b1 = (struct Edge*)b;
-    return a1->weight > b1->weight;
-}
-
-// The main function to construct MST using Kruskal's algorithm
-void KruskalMST(struct Graph* graph) {
-    int V = graph->V;
-    struct Edge result[V];  // This will store the resultant MST
-    int e = 0;  // An index variable, used for result[]
-    int i = 0;  // An index variable, used for sorted edges
-
-    // Step 1: Sort all the edges in non-decreasing order of their weight
-    qsort(graph->edge, graph->E, sizeof(graph->edge[0]), compare);
-
-    // Allocate memory for creating V subsets
-    struct subset *subsets = (struct subset*) malloc(V * sizeof(struct subset));
-
-    // Create V subsets with single elements
-    for (int v = 0; v < V; ++v) {
-        subsets[v].parent = v;
-        subsets[v].rank = 0;
-    }
-
-    // Number of edges to be taken is equal to V-1
-    while (e < V - 1 && i < graph->E) {
-        // Step 2: Pick the smallest edge. And increment the index for next iteration
-        struct Edge next_edge = graph->edge[i++];
-
-        int x = find(subsets, next_edge.src);
-        int y = find(subsets, next_edge.dest);
-
-        // If including this edge does't cause cycle, include it in result and increment the index of result for next edge
-        if (x != y) {
-            result[e++] = next_edge;
-            Union(subsets, x, y);
-        }
-        // Else discard the next_edge
-    }
-
-    // print the contents of result[] to display the built MST
-    printf("Following are the edges in the constructed MST\n");
-    for (i = 0; i < e; ++i)
-        printf("%d -- %d == %d\n", result[i].src, result[i].dest, result[i].weight);
-    
-    return;
-}
-
-// Driver code
-int main() {
-    /* Let us create the following graph
-         10
-    0--------1
-    |  \     |
-   6|   5\   |15
-    |      \ |
-    2--------3
-        4       */
-    int V = 4;  // Number of vertices in graph
-    int E = 5;  // Number of edges in graph
-    struct Graph* graph = createGraph(V, E);
-
-    // add edge 0-1
-    graph->edge[0].src = 0;
-    graph->edge[0].dest = 1;
-    graph->edge[0].weight = 10;
-
-    // add edge 0-2
-    graph->edge[1].src = 0;
-    graph->edge[1].dest = 2;
-    graph->edge[1].weight = 6;
-
-    // add edge 0-3
-    graph->edge[2].src = 0;
-    graph->edge[2].dest = 3;
-    graph->edge[2].weight = 5;
-
-    // add edge 1-3
-    graph->edge[3].src = 1;
-    graph->edge[3].dest = 3;
-    graph->edge[3].weight = 15;
-
-    // add edge 2-3
-    graph->edge[4].src = 2;
-    graph->edge[4].dest = 3;
-    graph->edge[4].weight = 4;
-
-    KruskalMST(graph);
-
-    return 0;
+int main() 
+{ 
+    	int i,j,n; 
+    	printf("\nEnter the number of vertices :  "); 
+    	scanf("%d",&n); 
+    	for(i=1;i<=n;i++) 
+	    	parent[i]=0; 
+        printf("\nEnter the cost adjacency matrix 0-for self edge and 999-if no edge\n"); 
+        for(i=1;i<=n;i++) 
+	    	for(j=1;j<=n;j++) 
+		    	scanf("%d",&cost[i][j]); 
+	kruskal(n);
+	return 0; 
 }
