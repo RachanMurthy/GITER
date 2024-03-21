@@ -1,0 +1,50 @@
+-- CREATE TABLE Student (
+--     snum INT PRIMARY KEY,
+--     sname VARCHAR(100),
+--     major VARCHAR(50),
+--     degree VARCHAR(50),
+--     age INT
+-- );
+
+-- CREATE TABLE Faculty (
+--     fid INT PRIMARY KEY,
+--     fname VARCHAR(100),
+--     deptid INT
+-- );
+
+-- CREATE TABLE Class (
+--     cname VARCHAR(100) PRIMARY KEY,
+--     meets_at VARCHAR(50),
+--     room VARCHAR(50),
+--     fid INT,
+--     FOREIGN KEY (fid) REFERENCES Faculty(fid)
+-- );
+
+-- CREATE TABLE Enrolled (
+--     snum INT,
+--     cname VARCHAR(100),
+--     PRIMARY KEY (snum, cname),
+--     FOREIGN KEY (snum) REFERENCES Student(snum),
+--     FOREIGN KEY (cname) REFERENCES Class(cname)
+-- );
+
+-- INSERT INTO Student (snum, sname, major, degree, age) VALUES
+-- (1, 'John Doe', 'Computer Science', 'SR', 22),
+-- (2, 'Jane Smith', 'History', 'JR', 20),
+-- (3, 'Mike Brown', 'Mathematics', 'JR', 21),
+-- (4, 'Lisa White', 'History', 'SR', 23),
+-- (5, 'Mark Black', 'Computer Science', 'FR', 18);
+
+-- INSERT INTO Faculty (fid, fname, deptid) VALUES
+-- (1, 'I. Teacher', 101),
+-- (2, 'A. Professor', 102),
+-- (3, 'C. Lecturer', 103),
+-- (4, 'D. Scholar', 104),
+-- (5, 'E. Tutor', 105);
+
+-- INSERT INTO Class (cname, meets_at, room, fid) VALUES
+-- ('Algebra', '10:00', 'R128', 3),
+-- ('History of Art', '12:00', 'R256', 2),
+-- ('Introduction to Programming', '10:00', 'R128', 1),
+-- ('Advanced Programming', '14:00', 'R254', 1),
+-- ('Calculus', '16:00', 'R128', 3);
