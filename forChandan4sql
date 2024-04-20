@@ -1,0 +1,83 @@
+CREATE TABLE branch (
+    branch_name VARCHAR(100),
+    branch_city VARCHAR(100),
+    assets DECIMAL(15, 2),
+    PRIMARY KEY (branch_name)
+);
+
+CREATE TABLE customer (
+    customer_name VARCHAR(100),
+    customer_street VARCHAR(100),
+    customer_city VARCHAR(100),
+    PRIMARY KEY (customer_name)
+);
+
+CREATE TABLE account (
+    account_number INT,
+    branch_name VARCHAR(100),
+    balance DECIMAL(15, 2),
+    PRIMARY KEY (account_number),
+    FOREIGN KEY (branch_name) REFERENCES branch(branch_name)
+);
+
+CREATE TABLE loan (
+    loan_number INT,
+    branch_name VARCHAR(100),
+    amount DECIMAL(15, 2),
+    PRIMARY KEY (loan_number),
+    FOREIGN KEY (branch_name) REFERENCES branch(branch_name)
+);
+
+CREATE TABLE depositor (
+    customer_name VARCHAR(100),
+    account_number INT,
+    PRIMARY KEY (customer_name, account_number),
+    FOREIGN KEY (customer_name) REFERENCES customer(customer_name),
+    FOREIGN KEY (account_number) REFERENCES account(account_number)
+);
+
+CREATE TABLE borrower (
+    customer_name VARCHAR(100),
+    loan_number INT,
+    PRIMARY KEY (customer_name, loan_number),
+    FOREIGN KEY (customer_name) REFERENCES customer(customer_name),
+    FOREIGN KEY (loan_number) REFERENCES loan(loan_number)
+);
+
+CREATE TABLE employee (
+    employee_name VARCHAR(100),
+    branch_name VARCHAR(100),
+    salary DECIMAL(15, 2),
+    PRIMARY KEY (employee_name),
+    FOREIGN KEY (branch_name) REFERENCES branch(branch_name)
+);
+
+-- Inserting into branch
+INSERT INTO branch (branch_name, branch_city, assets) VALUES ('Downtown', 'New York', 1000000.00);
+
+-- Inserting into customer
+INSERT INTO customer (customer_name, customer_street, customer_city) VALUES ('John Doe', '123 Elm Street', 'Springfield');
+
+-- Inserting into account
+INSERT INTO account (account_number, branch_name, balance) VALUES (1, 'Downtown', 800.00);
+
+-- Inserting into loan
+INSERT INTO loan (loan_number, branch_name, amount) VALUES (101, 'Downtown', 5000.00);
+
+-- Inserting into depositor
+INSERT INTO depositor (customer_name, account_number) VALUES ('John Doe', 1);
+
+-- Inserting into borrower
+INSERT INTO borrower (customer_name, loan_number) VALUES ('John Doe', 101);
+
+-- Inserting into employee
+INSERT INTO employee (employee_name, branch_name, salary) VALUES ('Jane Smith', 'Downtown', 40000.00);
+
+
+SELECT customer_name FROM customer;
+
+SELECT DISTINCT branch_name FROM loan;
+
+SELECT * FROM branch;
+
+SELECT account_number FROM account WHERE balance > 700.00;
