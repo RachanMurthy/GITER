@@ -1,20 +1,19 @@
 #include <stdio.h>
 #include <string.h>
-#include <conio.h>
 
-void main() {
+int main() {
     int table[126];
     char t[100], p[25];
     int n, i, k, j, m, flag = 0;
 
-    clrscr();
-
     printf("Enter the text: ");
-    gets(t);
+    fgets(t, sizeof(t), stdin);
+    t[strcspn(t, "\n")] = 0; // Remove newline character
     n = strlen(t);
 
     printf("Enter the pattern: ");
-    gets(p);
+    fgets(p, sizeof(p), stdin);
+    p[strcspn(p, "\n")] = 0; // Remove newline character
     m = strlen(p);
 
     for (i = 0; i < 126; i++)
@@ -40,5 +39,5 @@ void main() {
     if (!flag)
         printf("Pattern is not found in the given text\n");
 
-    getch();
+    return 0;
 }
